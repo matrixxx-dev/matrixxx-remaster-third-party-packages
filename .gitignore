@@ -1,3 +1,3 @@
-third-party-packages_*
+third-party-packages*
 LAYER/third-party_*
-_backup
+func_packages
