@@ -1,0 +1,91 @@
+#!/bin/bash
+
+## ########################################################################## ##
+##
+## ########################################################################## ##
+export FUNC_PACKAGES_HANDLING="true"
+
+TEMP_FILE="xdummy.txt"
+
+## -------------------------------------------------------------------------- ##
+## FUNCTIONS:
+## -------------------------------------------------------------------------- ##
+func_download_info_file(){ # url="$1"
+  wget -a "${LOG_FILE}" -O "${TEMP_FILE}" "${1}"
+}
+
+## save versions in architecture specific version files:
+## see func_gen_log_files: the files are summarized here.
+func_save_versions(){ # package="$1"; version="$2"; version_amd64="$3"
+  local package
+  package="$1"
+  ## check number of function parameter and then write VERSION_FILE
+  ## -> one parameter => for all arch.
+  [[ ${#@} -eq 2 ]] && echo "${package}: $2" >> "version.txt"
+
+  ## -> two parameters => first for i386, second for amd64
+  if [[ ${#@} -eq 3 ]]; then
+    [ -n "$2" ] && echo "${package}: $2" >> "version_i386.txt"
+    [ -n "$3" ] && echo "${package}: $3" >> "version_amd64.txt"
+  fi
+}
+
+## save download url in architecture specific download files:
+func_setup_download_files(){ # url="$1"; package="$2"
+  if (( ${#files[@]} )); then
+    func_gen_download_file "files" "$1" "$2"
+    files=()
+  fi
+  if (( ${#files_i386[@]} )); then
+    func_gen_download_file "files_i386" "$1" "$2"
+    files_i386=()
+  fi
+  if (( ${#files_amd64[@]} )); then
+    func_gen_download_file "files_amd64" "$1" "$2"
+    files_amd64=()
+  fi
+}
+
+func_gen_download_file(){ # (ref)file_arry; url="$2"; package="$3"
+  local file_arry name url package
+  declare -n file_arry="$1"
+  name="$1"; url="$2"; package="$3"
+
+  local arch dir download_list_file element element_name
+  arch="${name//files/}"
+  dir="data${arch}/${package}"
+  download_list_file="data${arch}.list"
+  for element in "${file_arry[@]}"; do
+    element_name="$(basename "${element}")"
+    echo "./${dir}/${element_name} ${url}${element}" >> "${download_list_file}"
+  done
+}
+
+## delete temp. download file
+func_remove_tmp_download_file(){
+  rm -f "${TEMP_FILE}"
+}
+
+## -------------------------------------------------------------------------- ##
+func_gen_log_files(){
+  local dir file download_list_file version_file
+  download_list_file="download_data.list"
+  version_file="download_version.txt"
+  echo -n > "${download_list_file}"
+  echo -n > "${version_file}"
+  for dir in ${DATA_DIR_LIST}; do
+    file="${dir}.list"
+    [ -f "${file}" ] && {
+      cat "${file}" >> "${download_list_file}"
+    }
+    file="version${dir//data/}.txt"
+    [ -f "${file}" ] && {
+      cat "${file}" >> "${version_file}"
+      rm -f "${file}"
+    }
+  done
+  echo "${LOG_DATE}" >> "${TIMESTAMP_FILE}"
+}
+
+## ########################################################################## ##
+
