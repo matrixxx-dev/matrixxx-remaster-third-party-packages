@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## ########################################################################## ##
-## Get third party packages
+## get third party packages
 ## - try to get information for download from homepage
 ## - generate a list of donloaded versions
 ## - generate a list for wget to download files [data*.list]

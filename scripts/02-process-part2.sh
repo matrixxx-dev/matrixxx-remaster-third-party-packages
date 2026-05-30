@@ -5,8 +5,6 @@
 ## - extract packages to working directory
 ## - build squashfs file
 ##
-## ToDo: Erzeuge im /opt Verzeichnis für alle versionierten Verzeichnisse
-##       einen Symlink auf ein neutrales Verzeichnis
 ## ########################################################################## ##
 ## includes:
 source ./part2.ini

@@ -2,24 +2,89 @@
 
 ## ########################################################################## ##
 ## generates third-party package download lists
+##
 ## ########################################################################## ##
 export FUNC_PACKAGES="true"
 
 ## overwrite default definitions of part2:
-SELECTED_USER="xxx"
-USER_POSTFIX="-common"
+SELECTED_USER="xxx";
+USER_POSTFIX="-privacy"
 LAYER_NO="10"
 
 ## -------------------------------------------------------------------------- ##
 ## FUNCTIONS (CALLER)
 ## -------------------------------------------------------------------------- ##
 func_load_software_package(){
-:
+  func_get_tor
+  func_get_veracrypt
 }
 
 ## -------------------------------------------------------------------------- ##
 ## FUNCTIONS:
 ## -------------------------------------------------------------------------- ##
+func_get_tor(){
+  local package_name package search_pattern version files_amd64 files_i386
+  package_name="tor-browser-linux"; package="${package_name}.tar.xz"
 
+  ## get local path and filenames which has to be donwnloaded
+  url="https://www.torproject.org/download/languages/"
+  func_download_info_file "${url}"
+
+  ## generate architecture-specific file arrays for download
+  search_pattern="torbrowser/.{1,8}/"
+  version=$(grep -E -o "${search_pattern}" "${TEMP_FILE}" | tail -n 1)
+  version="${version//torbrowser\//}"; version="${version//\//}"
+
+  files_amd64=(
+    "${version}/tor-browser-linux-x86_64-${version}.tar.xz"
+    "${version}/tor-browser-linux-x86_64-${version}.tar.xz.asc"
+  )
+  files_i386=(
+    "${version}/tor-browser-linux-i686-${version}.tar.xz"
+    "${version}/tor-browser-linux-i686-${version}.tar.xz.asc"
+  )
+
+  ## save versions in architecture-specific version files:
+  func_save_versions "${package}" "${version}" "${version}"
+
+  ## save download url in architecture-specific download files:
+  url="https://dist.torproject.org/torbrowser/"
+  func_setup_download_files "${url}" "${package}"
+}
+
+## ------------------------------------------------ ##
+func_get_veracrypt(){
+  local package_name package url debian_version search_pattern pattern version
+  local files_amd64 files_i386
+  package_name="veracrypt"; package="${package_name}.deb"
+  #debian_version="11"
+  debian_version="12"
+  #debian_version="13"      ## no i386.deb
+
+  ## get local path and filenames which has to be donwnloaded
+  url="https://veracrypt.fr/en/Downloads.html"
+  func_download_info_file "${url}"
+
+  ## generate architecture-specific file arrays for download
+  search_pattern="veracrypt-.*-Debian-${debian_version}-amd64.deb"
+  readarray -t pattern < <(grep -E -o "${search_pattern}" "${TEMP_FILE}")
+  version="${pattern[0]}"
+  version="${version//*veracrypt-/}"; version="${version//-Debian*/}"
+  files_amd64=(
+    "veracrypt-${version}-Debian-${debian_version}-amd64.deb"
+    "veracrypt-${version}-sha512sum.txt"
+  )
+  files_i386=(
+    "veracrypt-${version}-Debian-${debian_version}-i386.deb"
+    "veracrypt-${version}-sha512sum.txt"
+  )
+
+  ## save versions in architecture specific version files:
+  func_save_versions "${package}" "${version}" "${version}"
+
+  ## save download url in architecture specific download files:
+  url="https://launchpad.net/veracrypt/trunk/${version}/+download/"
+  func_setup_download_files "${url}" "${package}"
+}
 
 ## ########################################################################## ##

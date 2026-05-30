@@ -83,7 +83,6 @@ func_extract_package_to_data() # dir_name
   else
     [ -d "${output}" ] || mkdir -p "${output}"/info
     sh -c "echo 'CONTENT:' > ${info_file}"
-
     for file in ${file_list}; do
       echo "Extracted file: ${file}"
       sh -c "echo ' '${file} >> ${info_file}"
@@ -97,12 +96,6 @@ func_extract_package_to_data() # dir_name
       fi
 
       func_extract_package "${file}" "${output_path}" "${file_ext}"
-    done
-
-    sh -c "echo 'DIRECTORIES:' >> ${info_file}"
-    file_list="$(ls "${output}")"
-    for file in ${file_list}; do
-      sh -c "echo ' '${file} >> ${info_file}"
     done
   fi
 }

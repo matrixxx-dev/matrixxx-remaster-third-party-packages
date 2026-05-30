@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## ########################################################################## ##
-## generate new independent-packages
+## creating a squashFS image file from third-party packages (collection script)
 ##
 ## ########################################################################## ##
 

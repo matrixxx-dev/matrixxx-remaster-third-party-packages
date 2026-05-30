@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ## ########################################################################## ##
+## helper functions for third-party packages handling
 ##
 ## ########################################################################## ##
 export FUNC_PACKAGES_HANDLING="true"
