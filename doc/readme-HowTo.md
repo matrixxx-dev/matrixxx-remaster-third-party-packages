@@ -45,7 +45,8 @@ toc: false
   required to download packages for the `Tor Browser` and `VeraCrypt`
 - **Manually:** Adjust the desired version number in the `version.ini` file.
 - **Execute:** 00-generate_new_independent_packages.sh
-- As a result, the SquashFS image file can be found within its corresponding subdirectory inside the `LAYER` directory.
+- As a result, the SquashFS image file can be found within its corresponding
+  subdirectory inside the `LAYER` directory.
 
 > [!NOTE]
 > The effort required to generate the `func_packages` file for a desired
@@ -60,7 +61,6 @@ toc: false
 > USE OF THIS SOFTWARE.
 > YOU ARE RESPONSIBLE FOR YOUR OWN COMPLIANCE WITH ALL APPLICABLE LAWS.
 
-Extrahieren Sie Pakete in ein entsprechendes Datenverzeichnis.
 ********************************************************************************
 # Anleitung: Remastering mit Container-Dateien, die aus Drittanbieter-Paketen generiert werden
 
